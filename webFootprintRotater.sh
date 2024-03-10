@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Determine the script's directory
-BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 echo "For preventing canvas fingerprinting, you can use browser extensions like CanvasBlocker."
 
 # Function to check if a command exists
 command_exists() {
-    command -v "$1" &> /dev/null
+    command -v "$1" >/dev/null 2>&1
 }
 
 # Function to check if a directory exists
@@ -30,7 +30,7 @@ if directory_exists "$MOZILLA_DIR"; then
     sqlite3 "$MOZILLA_DIR/cookies.sqlite" "DELETE FROM moz_cookies"
 
     # Change user agent
-    echo 'user_pref("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");' >> "$MOZILLA_DIR/prefs.js"
+    echo 'user_pref("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");' >> "$MOZILLA_DIR/user.js"
 else
     echo "Mozilla ~/.mozilla/firefox/ directory not found."
 fi
