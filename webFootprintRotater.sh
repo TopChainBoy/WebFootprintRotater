@@ -18,7 +18,7 @@ directory_exists() {
 # Check if ProtonVPN is installed
 if command_exists protonvpn; then
     # Switch IP
-    protonvpn c -r
+    sudo protonvpn c -r
 else
     echo "ProtonVPN is not installed."
 fi
@@ -45,4 +45,28 @@ if directory_exists "$CHROME_DIR"; then
     echo 'chrome://flags/#user-agent' >> "$CHROME_DIR/Preferences"
 else
     echo "Chrome ~/.config/google-chrome/ directory not found."
+fi
+
+# Check if Edge directory exists
+EDGE_DIR=~/.config/microsoft-edge/Default
+if directory_exists "$EDGE_DIR"; then
+    # Clear cookies
+    rm "$EDGE_DIR/Cookies"
+
+    # Change user agent
+    echo 'edge://flags/#user-agent' >> "$EDGE_DIR/Preferences"
+else
+    echo "Edge ~/.config/microsoft-edge/ directory not found."
+fi
+
+# Check if Brave directory exists
+BRAVE_DIR=~/.config/BraveSoftware/Brave-Browser/Default
+if directory_exists "$BRAVE_DIR"; then
+    # Clear cookies
+    rm "$BRAVE_DIR/Cookies"
+
+    # Change user agent
+    echo 'brave://flags/#user-agent' >> "$BRAVE_DIR/Preferences"
+else
+    echo "Brave ~/.config/BraveSoftware/Brave-Browser/ directory not found."
 fi
