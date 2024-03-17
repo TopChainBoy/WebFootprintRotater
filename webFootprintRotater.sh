@@ -3,12 +3,17 @@
 # Determine the script's directory
 BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# Check if the special option is provided
-if [[ $1 == "--clear-cache" ]]; then
-    CLEAR_CACHE=true
-else
-    CLEAR_CACHE=false
-fi
+# Check if the special options are provided
+CLEAR_CACHE=false
+CLEAR_HISTORY=false
+for arg in "$@"
+do
+    if [[ $arg == "--clear-cache" ]]; then
+        CLEAR_CACHE=true
+    elif [[ $arg == "--clear-history" ]]; then
+        CLEAR_HISTORY=true
+    fi
+done
 
 echo "For preventing canvas fingerprinting, you can use browser extensions like CanvasBlocker."
 
@@ -41,6 +46,11 @@ if directory_exists "$MOZILLA_DIR"; then
         rm -rf "$MOZILLA_DIR/cache2"
     fi
 
+    # Clear history
+    if $CLEAR_HISTORY; then
+        sqlite3 "$MOZILLA_DIR/places.sqlite" "DELETE FROM moz_places"
+    fi
+
     # Change user agent
     echo 'user_pref("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");' >> "$MOZILLA_DIR/user.js"
 else
@@ -56,6 +66,11 @@ if directory_exists "$CHROME_DIR"; then
     # Clear cache
     if $CLEAR_CACHE; then
         rm -rf "$CHROME_DIR/Cache"
+    fi
+
+    # Clear history
+    if $CLEAR_HISTORY; then
+        rm "$CHROME_DIR/History"
     fi
 
     # Change user agent
@@ -75,6 +90,11 @@ if directory_exists "$EDGE_DIR"; then
         rm -rf "$EDGE_DIR/Cache"
     fi
 
+    # Clear history
+    if $CLEAR_HISTORY; then
+        rm "$EDGE_DIR/History"
+    fi
+
     # Change user agent
     echo 'edge://flags/#user-agent' >> "$EDGE_DIR/Preferences"
 else
@@ -90,6 +110,11 @@ if directory_exists "$BRAVE_DIR"; then
     # Clear cache
     if $CLEAR_CACHE; then
         rm -rf "$BRAVE_DIR/Cache"
+    fi
+
+    # Clear history
+    if $CLEAR_HISTORY; then
+        rm "$BRAVE_DIR/History"
     fi
 
     # Change user agent
