@@ -57,68 +57,36 @@ else
     echo "Mozilla ~/.mozilla/firefox/ directory not found."
 fi
 
+# Function to handle browser data
+handle_browser_data() {
+    DIR=$1
+    FLAGS_URL=$2
+    if directory_exists "$DIR"; then
+        # Clear cookies
+        rm "$DIR/Cookies"
+
+        # Clear cache
+        if $CLEAR_CACHE; then
+            rm -rf "$DIR/Cache"
+        fi
+
+        # Clear history
+        if $CLEAR_HISTORY; then
+            rm "$DIR/History"
+        fi
+
+        # Change user agent
+        echo "$FLAGS_URL" >> "$DIR/Preferences"
+    else
+        echo "$DIR directory not found."
+    fi
+}
+
 # Check if Chrome directory exists
-CHROME_DIR=~/.config/google-chrome/Default
-if directory_exists "$CHROME_DIR"; then
-    # Clear cookies
-    rm "$CHROME_DIR/Cookies"
-
-    # Clear cache
-    if $CLEAR_CACHE; then
-        rm -rf "$CHROME_DIR/Cache"
-    fi
-
-    # Clear history
-    if $CLEAR_HISTORY; then
-        rm "$CHROME_DIR/History"
-    fi
-
-    # Change user agent
-    echo 'chrome://flags/#user-agent' >> "$CHROME_DIR/Preferences"
-else
-    echo "Chrome ~/.config/google-chrome/ directory not found."
-fi
+handle_browser_data ~/.config/google-chrome/Default 'chrome://flags/#user-agent'
 
 # Check if Edge directory exists
-EDGE_DIR=~/.config/microsoft-edge/Default
-if directory_exists "$EDGE_DIR"; then
-    # Clear cookies
-    rm "$EDGE_DIR/Cookies"
-
-    # Clear cache
-    if $CLEAR_CACHE; then
-        rm -rf "$EDGE_DIR/Cache"
-    fi
-
-    # Clear history
-    if $CLEAR_HISTORY; then
-        rm "$EDGE_DIR/History"
-    fi
-
-    # Change user agent
-    echo 'edge://flags/#user-agent' >> "$EDGE_DIR/Preferences"
-else
-    echo "Edge ~/.config/microsoft-edge/ directory not found."
-fi
+handle_browser_data ~/.config/microsoft-edge/Default 'edge://flags/#user-agent'
 
 # Check if Brave directory exists
-BRAVE_DIR=~/.config/BraveSoftware/Brave-Browser/Default
-if directory_exists "$BRAVE_DIR"; then
-    # Clear cookies
-    rm "$BRAVE_DIR/Cookies"
-
-    # Clear cache
-    if $CLEAR_CACHE; then
-        rm -rf "$BRAVE_DIR/Cache"
-    fi
-
-    # Clear history
-    if $CLEAR_HISTORY; then
-        rm "$BRAVE_DIR/History"
-    fi
-
-    # Change user agent
-    echo 'brave://flags/#user-agent' >> "$BRAVE_DIR/Preferences"
-else
-    echo "Brave ~/.config/BraveSoftware/Brave-Browser/ directory not found."
-fi
+handle_browser_data ~/.config/BraveSoftware/Brave-Browser/Default 'brave://flags/#user-agent'
