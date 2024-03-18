@@ -35,52 +35,53 @@ else
     echo "ProtonVPN is not installed."
 fi
 
-# Check if Mozilla directory exists
-MOZILLA_DIR=$(find ~/.mozilla/firefox/*.default -maxdepth 0 -type d 2>/dev/null)
-if directory_exists "$MOZILLA_DIR"; then
-    # Clear cookies
-    sqlite3 "$MOZILLA_DIR/cookies.sqlite" "DELETE FROM moz_cookies"
-
-    # Clear cache
-    if $CLEAR_CACHE; then
-        rm -rf "$MOZILLA_DIR/cache2"
-    fi
-
-    # Clear history
-    if $CLEAR_HISTORY; then
-        sqlite3 "$MOZILLA_DIR/places.sqlite" "DELETE FROM moz_places"
-    fi
-
-    # Change user agent
-    echo 'user_pref("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");' >> "$MOZILLA_DIR/user.js"
-else
-    echo "Mozilla ~/.mozilla/firefox/ directory not found."
-fi
-
 # Function to handle browser data
 handle_browser_data() {
     DIR=$1
     FLAGS_URL=$2
+    BROWSER_TYPE=$3
     if directory_exists "$DIR"; then
-        # Clear cookies
-        rm "$DIR/Cookies"
+        if [[ $BROWSER_TYPE == "firefox" ]]; then
+            # Clear cookies
+            sqlite3 "$DIR/cookies.sqlite" "DELETE FROM moz_cookies"
 
-        # Clear cache
-        if $CLEAR_CACHE; then
-            rm -rf "$DIR/Cache"
+            # Clear cache
+            if $CLEAR_CACHE; then
+                rm -rf "$DIR/cache2"
+            fi
+
+            # Clear history
+            if $CLEAR_HISTORY; then
+                sqlite3 "$DIR/places.sqlite" "DELETE FROM moz_places"
+            fi
+
+            # Change user agent
+            echo 'user_pref("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");' >> "$DIR/user.js"
+        else
+            # Clear cookies
+            rm "$DIR/Cookies"
+
+            # Clear cache
+            if $CLEAR_CACHE; then
+                rm -rf "$DIR/Cache"
+            fi
+
+            # Clear history
+            if $CLEAR_HISTORY; then
+                rm "$DIR/History"
+            fi
+
+            # Change user agent
+            echo "$FLAGS_URL" >> "$DIR/Preferences"
         fi
-
-        # Clear history
-        if $CLEAR_HISTORY; then
-            rm "$DIR/History"
-        fi
-
-        # Change user agent
-        echo "$FLAGS_URL" >> "$DIR/Preferences"
     else
         echo "$DIR directory not found."
     fi
 }
+
+# Check if Mozilla directory exists
+MOZILLA_DIR=$(find ~/.mozilla/firefox/*.default -maxdepth 0 -type d 2>/dev/null)
+handle_browser_data "$MOZILLA_DIR" 'about:config' 'firefox'
 
 # Check if Chrome directory exists
 handle_browser_data ~/.config/google-chrome/Default 'chrome://flags/#user-agent'
