@@ -6,12 +6,15 @@ BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Check if the special options are provided
 CLEAR_CACHE=false
 CLEAR_HISTORY=false
+CLEAR_FORM_DATA=false
 for arg in "$@"
 do
     if [[ $arg == "--clear-cache" ]]; then
         CLEAR_CACHE=true
     elif [[ $arg == "--clear-history" ]]; then
         CLEAR_HISTORY=true
+    elif [[ $arg == "--clear-form-data" ]]; then
+        CLEAR_FORM_DATA=true
     fi
 done
 
@@ -55,6 +58,11 @@ handle_browser_data() {
                 sqlite3 "$DIR/places.sqlite" "DELETE FROM moz_places"
             fi
 
+            # Clear form data
+            if $CLEAR_FORM_DATA; then
+                sqlite3 "$DIR/formhistory.sqlite" "DELETE FROM moz_formhistory"
+            fi
+
             # Change user agent
             echo 'user_pref("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");' >> "$DIR/user.js"
         else
@@ -69,6 +77,11 @@ handle_browser_data() {
             # Clear history
             if $CLEAR_HISTORY; then
                 rm "$DIR/History"
+            fi
+
+            # Clear form data
+            if $CLEAR_FORM_DATA; then
+                rm "$DIR/Web Data"
             fi
 
             # Change user agent
