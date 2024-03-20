@@ -45,22 +45,27 @@ handle_browser_data() {
     BROWSER_TYPE=$3
     if directory_exists "$DIR"; then
         if [[ $BROWSER_TYPE == "firefox" ]]; then
-            # Clear cookies
-            sqlite3 "$DIR/cookies.sqlite" "DELETE FROM moz_cookies"
+            # Check if sqlite3 is installed
+            if command_exists sqlite3; then
+                # Clear cookies
+                sqlite3 "$DIR/cookies.sqlite" "DELETE FROM moz_cookies"
 
-            # Clear cache
-            if $CLEAR_CACHE; then
-                rm -rf "$DIR/cache2"
-            fi
+                # Clear cache
+                if $CLEAR_CACHE; then
+                    rm -rf "$DIR/cache2"
+                fi
 
-            # Clear history
-            if $CLEAR_HISTORY; then
-                sqlite3 "$DIR/places.sqlite" "DELETE FROM moz_places"
-            fi
+                # Clear history
+                if $CLEAR_HISTORY; then
+                    sqlite3 "$DIR/places.sqlite" "DELETE FROM moz_places"
+                fi
 
-            # Clear form data
-            if $CLEAR_FORM_DATA; then
-                sqlite3 "$DIR/formhistory.sqlite" "DELETE FROM moz_formhistory"
+                # Clear form data
+                if $CLEAR_FORM_DATA; then
+                    sqlite3 "$DIR/formhistory.sqlite" "DELETE FROM moz_formhistory"
+                fi
+            else
+                echo "sqlite3 is not installed."
             fi
 
             # Change user agent
