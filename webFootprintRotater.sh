@@ -13,6 +13,7 @@ BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 CLEAR_CACHE=false
 CLEAR_HISTORY=false
 CLEAR_FORM_DATA=false
+CHANGE_IP=false
 for arg in "$@"
 do
     if [[ $arg == "--clear-cache" ]]; then
@@ -21,6 +22,8 @@ do
         CLEAR_HISTORY=true
     elif [[ $arg == "--clear-form-data" ]]; then
         CLEAR_FORM_DATA=true
+    elif [[ $arg == "--change-ip" ]]; then
+        CHANGE_IP=true
     fi
 done
 
@@ -37,11 +40,11 @@ directory_exists() {
 }
 
 # Check if ProtonVPN is installed
-if command_exists protonvpn; then
+if command_exists protonvpn && $CHANGE_IP; then
     # Switch IP
     sudo protonvpn c -r
 else
-    echo "ProtonVPN is not installed."
+    echo "ProtonVPN is not installed or IP change not requested."
 fi
 
 # Function to handle browser data
