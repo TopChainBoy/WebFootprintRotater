@@ -15,6 +15,7 @@ CLEAR_HISTORY=false
 CLEAR_FORM_DATA=false
 CHANGE_IP=false
 CLEAR_BASH_HISTORY=false
+CLEAR_CLIPBOARD=false
 for arg in "$@"
 do
     if [[ $arg == "--clear-cache" ]]; then
@@ -27,6 +28,8 @@ do
         CHANGE_IP=true
     elif [[ $arg == "--clear-bash-history" ]]; then
         CLEAR_BASH_HISTORY=true
+    elif [[ $arg == "--clear-clipboard" ]]; then
+        CLEAR_CLIPBOARD=true
     fi
 done
 
@@ -54,6 +57,12 @@ fi
 if $CLEAR_BASH_HISTORY; then
     history -c
     echo "Bash history cleared."
+fi
+
+# Clear clipboard history
+if $CLEAR_CLIPBOARD; then
+    echo -n | xclip -selection clipboard
+    echo "Clipboard history cleared."
 fi
 
 # Function to handle browser data
