@@ -136,3 +136,9 @@ handle_browser_data ~/.config/microsoft-edge/Default 'edge://flags/#user-agent'
 
 # Check if Brave directory exists
 handle_browser_data ~/.config/BraveSoftware/Brave-Browser/Default 'brave://flags/#user-agent'
+
+# Clear terminal screen
+if command_exists clear; then
+    clear
+    echo "Terminal screen cleared."
+fi
