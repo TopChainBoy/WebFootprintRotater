@@ -45,6 +45,14 @@ directory_exists() {
     [ -d "$1" ]
 }
 
+# Function to clear system temp files
+clear_system_temp() {
+    echo "Clearing system temp files..."
+    rm -rf /tmp/*
+    rm -rf /var/tmp/*
+    echo "System temp files cleared."
+}
+
 # Check if ProtonVPN is installed
 if command_exists protonvpn && $CHANGE_IP; then
     # Switch IP
@@ -136,6 +144,9 @@ handle_browser_data ~/.config/microsoft-edge/Default 'edge://flags/#user-agent'
 
 # Check if Brave directory exists
 handle_browser_data ~/.config/BraveSoftware/Brave-Browser/Default 'brave://flags/#user-agent'
+
+# Call the function to clear system temp files
+clear_system_temp
 
 # Clear terminal screen
 if command_exists clear; then
