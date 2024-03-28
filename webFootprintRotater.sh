@@ -16,6 +16,7 @@ CLEAR_FORM_DATA=false
 CHANGE_IP=false
 CLEAR_BASH_HISTORY=false
 CLEAR_CLIPBOARD=false
+CLEAR_DNS_CACHE=false
 for arg in "$@"
 do
     if [[ $arg == "--clear-cache" ]]; then
@@ -30,6 +31,8 @@ do
         CLEAR_BASH_HISTORY=true
     elif [[ $arg == "--clear-clipboard" ]]; then
         CLEAR_CLIPBOARD=true
+    elif [[ $arg == "--clear-dns-cache" ]]; then
+        CLEAR_DNS_CACHE=true
     fi
 done
 
@@ -71,6 +74,16 @@ fi
 if $CLEAR_CLIPBOARD; then
     echo -n | xclip -selection clipboard
     echo "Clipboard history cleared."
+fi
+
+# Clear DNS cache
+if $CLEAR_DNS_CACHE; then
+    if command_exists systemd-resolve; then
+        systemd-resolve --flush-caches
+        echo "DNS cache cleared."
+    else
+        echo "systemd-resolve is not installed."
+    fi
 fi
 
 # Function to handle browser data
