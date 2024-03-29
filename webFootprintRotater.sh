@@ -17,6 +17,7 @@ CHANGE_IP=false
 CLEAR_BASH_HISTORY=false
 CLEAR_CLIPBOARD=false
 CLEAR_DNS_CACHE=false
+CLEAR_LOGS=false
 for arg in "$@"
 do
     if [[ $arg == "--clear-cache" ]]; then
@@ -33,6 +34,8 @@ do
         CLEAR_CLIPBOARD=true
     elif [[ $arg == "--clear-dns-cache" ]]; then
         CLEAR_DNS_CACHE=true
+    elif [[ $arg == "--clear-logs" ]]; then
+        CLEAR_LOGS=true
     fi
 done
 
@@ -84,6 +87,14 @@ if $CLEAR_DNS_CACHE; then
     else
         echo "systemd-resolve is not installed."
     fi
+fi
+
+# Clear system logs
+if $CLEAR_LOGS; then
+    echo "Clearing system logs..."
+    journalctl --rotate
+    journalctl --vacuum-time=1s
+    echo "System logs cleared."
 fi
 
 # Function to handle browser data
