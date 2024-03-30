@@ -59,6 +59,13 @@ clear_system_temp() {
     echo "System temp files cleared."
 }
 
+# Function to clear thumbnail cache
+clear_thumbnail_cache() {
+    echo "Clearing thumbnail cache..."
+    rm -rf ~/.cache/thumbnails/*
+    echo "Thumbnail cache cleared."
+}
+
 # Check if ProtonVPN is installed
 if command_exists protonvpn && $CHANGE_IP; then
     # Switch IP
@@ -97,6 +104,10 @@ if $CLEAR_LOGS; then
     echo "System logs cleared."
 fi
 
+# Call the function to clear thumbnail cache
+if $CLEAR_CACHE; then
+    clear_thumbnail_cache
+fi
 # Function to handle browser data
 handle_browser_data() {
     DIR=$1
