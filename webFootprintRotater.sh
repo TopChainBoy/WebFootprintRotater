@@ -66,6 +66,13 @@ clear_thumbnail_cache() {
     echo "Thumbnail cache cleared."
 }
 
+# Function to clear apt cache
+clear_apt_cache() {
+    echo "Clearing apt cache..."
+    apt-get clean
+    echo "Apt cache cleared."
+}
+
 # Check if ProtonVPN is installed
 if command_exists protonvpn && $CHANGE_IP; then
     # Switch IP
@@ -108,6 +115,12 @@ fi
 if $CLEAR_CACHE; then
     clear_thumbnail_cache
 fi
+
+# Call the function to clear apt cache
+if $CLEAR_CACHE; then
+    clear_apt_cache
+fi
+
 # Function to handle browser data
 handle_browser_data() {
     DIR=$1
