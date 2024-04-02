@@ -121,6 +121,16 @@ if $CLEAR_CACHE; then
     clear_apt_cache
 fi
 
+# Function to clear swap space
+clear_swap() {
+    echo "Clearing swap space..."
+    swapoff -a && swapon -a
+    echo "Swap space cleared."
+}
+
+# Call the function to clear swap space
+clear_swap
+
 # Function to handle browser data
 handle_browser_data() {
     DIR=$1
