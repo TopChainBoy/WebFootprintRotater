@@ -73,6 +73,20 @@ clear_apt_cache() {
     echo "Apt cache cleared."
 }
 
+# Function to clear swap space
+clear_swap() {
+    echo "Clearing swap space..."
+    swapoff -a && swapon -a
+    echo "Swap space cleared."
+}
+
+# Function to clear trash bin
+clear_trash_bin() {
+    echo "Clearing trash bin..."
+    rm -rf ~/.local/share/Trash/*
+    echo "Trash bin cleared."
+}
+
 # Check if ProtonVPN is installed
 if command_exists protonvpn && $CHANGE_IP; then
     # Switch IP
@@ -121,15 +135,11 @@ if $CLEAR_CACHE; then
     clear_apt_cache
 fi
 
-# Function to clear swap space
-clear_swap() {
-    echo "Clearing swap space..."
-    swapoff -a && swapon -a
-    echo "Swap space cleared."
-}
-
 # Call the function to clear swap space
 clear_swap
+
+# Call the function to clear trash bin
+clear_trash_bin
 
 # Function to handle browser data
 handle_browser_data() {
